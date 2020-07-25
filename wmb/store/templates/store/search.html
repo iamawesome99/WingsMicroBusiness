@@ -1,0 +1,27 @@
+{% extends 'store/branch_base.html' %}
+
+<!-- TODO: Combine this with product_details.html -->
+
+{% block content %}
+{% if no_query %}
+    <p>Please enter a search term.</p>
+{% else %}
+{% if products %}
+    <h1>Products:</h1>
+    <table>
+        {% for product in products %}
+            <tr>
+                <th><a href="{% url 'product_detail' product.branch.name product.id %}">{{product.name}}</a></th>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    {% ifnotequal branch.name "microbuisness" %}
+        <p>No results in this branch.</p>
+        <p>Trying searching in <a href="{% url 'search' 'microbuisness' %}?query={{post_data}}">all branches.</a></p>
+    {% else %}
+        <p>No results found.</p>
+    {% endifnotequal %}
+{% endif %}
+{% endif %}
+{% endblock %}

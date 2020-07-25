@@ -1,0 +1,33 @@
+{% extends 'store/branch_base.html' %}
+
+{% block content %}
+<h1> Cart </h1>
+{% if cart_items %}
+<table>
+    <tr>
+        <th>Item name</th>
+        <th>Price</th>
+        <th>Options</th>
+        <th>Remove</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td><a href="{% url 'product_detail' item.product.branch.name item.product.id %}">{{item.product.name}}</a></td>
+        <td>${{item.price}}</td>
+        <td>
+            {% for key, value in item.selected_options.items %}
+            {{key|capfirst}}: {{value|capfirst}}</br>
+            {% endfor %}
+        </td>
+        <td>
+            <a class="button" href="{% url 'remove_from_cart' branch=branch.name number=forloop.counter0 %}">Remove</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<p>Total: ${{total}}</p>
+<a class="button" href="{% url 'clear_cart' branch=branch.name %}">Clear Cart</a>
+{% else %}
+<p>You don't seem to have anything in your cart.</p>
+{% endif %}
+{% endblock %}

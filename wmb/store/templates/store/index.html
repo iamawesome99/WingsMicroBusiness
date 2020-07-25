@@ -1,0 +1,13 @@
+{% extends 'store/branch_base.html' %}
+
+{% block content %}
+
+<h1>Branches: </h1>
+
+{% for branch in branches %}
+
+<a href="{% url 'branch_detail' branch.name %}"><img class="logo logolist" src="{{branch.logo.url}}" alt="{{branch.display_name}}"></a>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'store/branch_base.html' %}
+
+{% block content %}
+<script>
+// Next/previous controls
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+// Thumbnail image controls
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+
+function updatePrice(){
+    var price = {{product.base_price}};
+    {% for op in ops_price %}
+    if(document.getElementById("{{op.0}}").checked) {price += {{op.1}};}
+    {% endfor %}
+    document.getElementById("price").innerHTML = price;
+}
+
+window.onclick = e => {
+    console.log(e.target);
+    console.log(e.target.tagName);
+    if (e.target.tagName == "INPUT") {
+        updatePrice();
+    }
+}
+</script>
+
+<h1>{{product.name}}</h1>
+
+<table width="100%">
+    {% if form %}
+        <tr>
+            <td width="70%" colspan="{{form.fields|length|add:1}}"><div id="slideshow">
+            {% if pictures %}
+            <!-- Slideshow container -->
+            <div class="slideshow-container">
+
+              {% for pic in pictures %}
+              <div class="mySlides fade">
+                <div class="numbertext">{{ forloop.counter }} / {{pictures|length}}</div>
+                <img src="{{pic.image.url}}" style="width:100%">
+                <div class="text">{{pic.caption}}</div>
+              </div>
+              {% endfor %}
+
+              <!-- Next and previous buttons -->
+              <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+              <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+
+            <!-- The dots/circles -->
+            <div style="text-align:center">
+              {% for pic in pictures %}
+                <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
+              {% endfor %}
+            </div>
+            {% endif %}
+            </div></td>
+            <td><p>{{product.description}}</p></td>
+        </tr>
+        <tr>
+            <form action="{{product.id}}/buy" method="post">
+                {% csrf_token %}
+                <td><h1>Options:</h1></td>
+                {% for field in form %}
+                    <td>
+                        <div class="fieldWrapper" style="float: left;">
+                            {{ field.errors }}
+                            {{ field.label_tag }} {{ field }}
+                            {% if field.help_text %}
+                                <p class="help">{{ field.help_text|safe }}</p>
+                            {% endif %}
+                        </div>
+                    </td>
+                {% endfor %}
+                <td>
+                    <p class="centered">Price is $<span id="price">inf</span></p>
+                    <input type="submit" value="Add to Cart" class="centered">
+                </td>
+            </form>
+        </tr>
+    {% else %}
+        <tr>
+            <td width="70%"><div id="slideshow">
+            {% if pictures %}
+            <!-- Slideshow container -->
+            <div class="slideshow-container">
+
+              {% for pic in pictures %}
+              <div class="mySlides fade">
+                <div class="numbertext">{{ forloop.counter }} / {{pictures|length}}</div>
+                <img src="{{pic.image.url}}" style="width:100%">
+                <div class="text">{{pic.caption}}</div>
+              </div>
+              {% endfor %}
+
+              <!-- Next and previous buttons -->
+              <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+              <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <br>
+
+            <!-- The dots/circles -->
+            <div style="text-align:center">
+              {% for pic in pictures %}
+                <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
+              {% endfor %}
+            </div>
+            {% endif %}
+            </div></td>
+            <td><p>{{product.description}}</p></td>
+        </tr>
+        <tr>
+            <form action="{{product.id}}/buy" method="post">
+                {% csrf_token %}
+                <td colspan="2">
+                    <p class="centered">Price is $<span id="price">inf</span></p>
+                    <input type="submit" value="Add to Cart" class="centered">
+                </td>
+            </form>
+        </tr>
+    {% endif %}
+</table>
+
+<script>
+updatePrice();
+var slideIndex = 1;
+showSlides(slideIndex);
+</script>
+{% endblock %}

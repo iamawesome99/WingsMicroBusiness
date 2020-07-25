@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'store/style.css' %}">
+    <title>{{title}}</title>
+    <link rel="icon" href="{{branch.icon.url}}">
+    <style>
+        body {
+           background: {{branch.background_color}};
+         }
+        .header {
+            background: {{branch.header_background_color}};
+            color: {{branch.header_text_color}};
+        }
+    </style>
+
+</head>
+<body>
+    <div class=header>
+        <a href="{% url 'branch_detail' branch.name %}">
+		    <img class=logo src={{branch.logo.url}} alt="{{branch.display_name}}">
+        </a>
+        <div class="flexbox">
+            <form action="{% url 'search' branch.name %}" method="get">
+                <input type="text" name="query" placeholder="Search.." style="flex-grow: 8">
+                <button type="submit" style="flex-grow: 1"><img src="{% static 'store/search.png' %}"></button>
+            </form>
+        </div>
+        <div class="flexbox">
+            <a href="{% url 'index' %}">
+                <img class="icon" src="{% static 'store/home.png' %}">
+            </a>
+            <a href="{% url 'cart' branch=branch.name%}"}>
+               <div style="position: relative">
+                    <img class="icon" src="{% static 'store/cart.jpg' %}">
+                    <p id="cart_counter">{{ cart_size }}</p>
+               </div>
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
