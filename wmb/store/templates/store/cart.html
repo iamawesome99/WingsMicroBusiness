@@ -13,6 +13,7 @@
     {% for item in cart_items %}
     <tr>
         <td><a href="{% url 'product_detail' item.product.branch.name item.product.id %}">{{item.product.name}}</a></td>
+        <td>{{item.quantity}}</td>
         <td>${{item.price}}</td>
         <td>
             {% for key, value in item.selected_options.items %}

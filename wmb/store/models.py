@@ -94,24 +94,34 @@ class Options:
 
 class SpecificProduct:
 
-    def __init__(self, product, selected_options):
+    def __init__(self, product, selected_options, quantity=None):
         self.product = product
+
+        print(selected_options)
+
+        if quantity:
+            self.quantity = quantity
+        else:
+            self.quantity = int(selected_options["quantity"])
+
         self.selected_options = product.options.remove_non_choices(selected_options)
-        self.price = product.options.dict_choose(selected_options) + product.base_price
+
+        self.price = (product.options.dict_choose(selected_options) + product.base_price) * self.quantity
 
     def __str__(self):
         return self.product.name + " Options: " + \
                "".join([str(k) + ": " + str(v) + " | " for k, v in self.selected_options.items()])
 
     def encode(self):
-        return str(self.product.id) + "|" + str(self.selected_options)
+        return str(self.product.id) + "|" + str(self.quantity) + "|" + str(self.selected_options)
 
     @staticmethod
     def decode(encoded):
         encoded = encoded.split('|')
         product = get_object_or_404(Product, pk=encoded[0])
-        selected_options = ast.literal_eval(encoded[1])
-        return SpecificProduct(product, selected_options)
+        quantity = int(encoded[1])
+        selected_options = ast.literal_eval(encoded[2])
+        return SpecificProduct(product, selected_options, quantity=quantity)
 
 
 class OptionsField(models.Field):

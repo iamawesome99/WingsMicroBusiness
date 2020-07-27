@@ -95,7 +95,11 @@ window.onclick = e => {
                     </td>
                 {% endfor %}
                 <td>
-                    <p class="centered">Price is $<span id="price">inf</span></p>
+                    <p class="centered">Price is $<span id="price">inf</span> each</p> <br/>
+                    <div class="centered">
+                        <span>Quantity: </span>
+                        <input type="number" min="0" step="1" value="1" name="quantity">
+                    </div> <br/>
                     <input type="submit" value="Add to Cart" class="centered">
                 </td>
             </form>
@@ -136,6 +140,10 @@ window.onclick = e => {
                 {% csrf_token %}
                 <td colspan="2">
                     <p class="centered">Price is $<span id="price">inf</span></p>
+                    <div class="centered">
+                        <span>Quantity: </span>
+                        <input type="number" min="0" step="1" value="1" name="quantity">
+                    </div> <br/>
                     <input type="submit" value="Add to Cart" class="centered">
                 </td>
             </form>
