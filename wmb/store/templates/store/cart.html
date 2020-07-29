@@ -1,11 +1,36 @@
 {% extends 'store/branch_base.html' %}
 
 {% block content %}
+{% csrf_token %}
+<script>
+
+    var csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value
+
+    function changeItemValue(item_number) {
+        var xhr = new XMLHttpRequest();
+        var element = document.getElementById("quantity_" + item_number)
+
+        xhr.onreadystatechange = function() { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE) {
+                document.getElementById("price_" + item_number).innerHTML  = "$" + xhr.responseText;
+            }
+        }
+
+        xhr.open("POST", "{% url 'change_cart' branch=branch.name %}", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", csrf);
+
+        var toSend = "id=" + item_number + "&new_amount=" + element.value;
+
+        xhr.send(toSend)
+    }
+</script>
 <h1> Cart </h1>
 {% if cart_items %}
 <table>
     <tr>
         <th>Item name</th>
+        <th>Quantity</th>
         <th>Price</th>
         <th>Options</th>
         <th>Remove</th>
@@ -13,11 +38,11 @@
     {% for item in cart_items %}
     <tr>
         <td><a href="{% url 'product_detail' item.product.branch.name item.product.id %}">{{item.product.name}}</a></td>
-        <td>{{item.quantity}}</td>
-        <td>${{item.price}}</td>
+        <td><input type="number" min="1" value="{{item.quantity}}" onchange="changeItemValue({{forloop.counter0}})" id="quantity_{{forloop.counter0}}"></td>
+        <td id="price_{{forloop.counter0}}">${{item.price}}</td>
         <td>
             {% for key, value in item.selected_options.items %}
-            {{key|capfirst}}: {{value|capfirst}}</br>
+                {{key|capfirst}}: {{value|capfirst}}</br>
             {% endfor %}
         </td>
         <td>

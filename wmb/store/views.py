@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -21,6 +21,14 @@ def add_to_cart(request, item):
 def make_cart(request):
     request.session['cart'] = []
     request.session.modified = True
+
+def modify_cart(request, location, item):
+    try:
+        request.session['cart'][location] = item
+    except KeyError or AttributeError:
+        pass
+    finally:
+        request.session.modified = True
 
 
 def remove_from_cart(request, location):
@@ -149,6 +157,28 @@ def remove_cart(request, branch, number):
         messages.error(request, "Couldn't find that item in your shopping cart")
     finally:
         return redirect(cart, branch=branch)
+
+
+def change_cart(request, branch):
+    if request.method == "POST":
+
+        print(request.POST)
+
+        cart_id = int(request.POST["id"])
+        product = SpecificProduct.decode(request.session['cart'][cart_id])
+
+        new_amount = int(request.POST["new_amount"])
+        new_product = SpecificProduct(product.product, product.selected_options, quantity = new_amount)
+
+        modify_cart(request, cart_id, new_product.encode())
+
+        return HttpResponse(str(new_product.price))
+
+
+
+
+
+
 
 
 def clear_cart(request, branch):
