@@ -52,7 +52,9 @@
     {% endfor %}
 </table>
 <p>Total: ${{total}}</p>
-<a class="button" href="{% url 'clear_cart' branch=branch.name %}">Clear Cart</a>
+<div style="text-align:center;">
+    <a class="button" href="{% url 'clear_cart' branch=branch.name %}">Clear Cart</a>
+</div>
 {% else %}
 <p>You don't seem to have anything in your cart.</p>
 {% endif %}

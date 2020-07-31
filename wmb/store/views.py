@@ -22,6 +22,7 @@ def make_cart(request):
     request.session['cart'] = []
     request.session.modified = True
 
+
 def modify_cart(request, location, item):
     try:
         request.session['cart'][location] = item
@@ -45,6 +46,19 @@ def cart_size(request):
         return len(request.session['cart'])
     except KeyError:
         return 0
+
+
+def get_cart(request):
+    return [SpecificProduct.decode(x) for x in request.session['cart']]
+
+
+def set_cart(request, cart):
+    try:
+        request.session['cart'] = cart
+    except KeyError or AttributeError:
+        pass
+    finally:
+        request.session.modified = True
 
 
 def base_context(request):
@@ -120,7 +134,24 @@ def buy(request, branch, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id)
 
-        add_to_cart(request, SpecificProduct(product, request.POST.dict()).encode())
+        new_product = SpecificProduct(product, request.POST.dict())
+
+        cart = get_cart(request)
+
+        already_in_cart = False
+        for count, i in enumerate(cart):
+            if i.is_same_product(new_product):
+                cart[count].quantity += new_product.quantity
+                already_in_cart = True
+                break
+
+        if already_in_cart:
+
+            set_cart(request, [x.encode() for x in cart])
+
+        else:
+
+            add_to_cart(request, new_product.encode())
 
         context = base_context(request)
         context.update({'branch': product.branch,
@@ -138,7 +169,7 @@ def cart(request, branch):
     except KeyError:
         make_cart(request)
 
-    cart_items = [SpecificProduct.decode(x) for x in request.session['cart']]
+    cart_items = get_cart(request)
     total = sum([x.price for x in cart_items])
     context = base_context(request)
     context.update({'branch': get_object_or_404(Branch, name=branch),
@@ -173,12 +204,6 @@ def change_cart(request, branch):
         modify_cart(request, cart_id, new_product.encode())
 
         return HttpResponse(str(new_product.price))
-
-
-
-
-
-
 
 
 def clear_cart(request, branch):

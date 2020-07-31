@@ -115,6 +115,9 @@ class SpecificProduct:
     def encode(self):
         return str(self.product.id) + "|" + str(self.quantity) + "|" + str(self.selected_options)
 
+    def is_same_product(self, other):
+        return self.product.id == other.product.id and str(self.selected_options) == str(other.selected_options)
+
     @staticmethod
     def decode(encoded):
         encoded = encoded.split('|')
