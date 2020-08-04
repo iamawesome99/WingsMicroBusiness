@@ -54,6 +54,7 @@
 <p>Total: ${{total}}</p>
 <div style="text-align:center;">
     <a class="button" href="{% url 'clear_cart' branch=branch.name %}">Clear Cart</a>
+    <a class="button" href="{% url 'purchase' branch=branch.name %}">Purchase</a>
 </div>
 {% else %}
 <p>You don't seem to have anything in your cart.</p>

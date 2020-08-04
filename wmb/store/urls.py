@@ -15,4 +15,5 @@ urlpatterns = [
     path('<str:branch>/cart/remove/all', views.clear_cart, name='clear_cart'),
     path('<str:branch>/cart/change/', views.change_cart, name='change_cart'),
     path('<str:branch>/search', views.search, name='search'),
+    path('<str:branch>/purchase', views.purchase, name='purchase'),
 ]

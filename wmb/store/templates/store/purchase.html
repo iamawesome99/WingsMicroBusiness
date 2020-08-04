@@ -1,0 +1,69 @@
+{% extends 'store/branch_base.html' %}
+
+{% block content %}
+
+    name phone number and email address
+    if you are a relative of a student, student name
+
+
+
+<div class="purchase_form">
+    <form onsubmit="return validate();">
+        <div>
+            <span>Name: </span>
+            <input type="text" name="name" id="name_input">
+            <p class="error-message" id="name_error" hidden>A name must be entered</p>
+        </div>
+        <div>
+            <span>Phone Number: </span>
+            <input type="text" name="number" id="number_input">
+            <p class="error-message" id="number_error" hidden>That's not a valid phone number</p>
+        </div>
+        <div>
+            <span>Email Address: </span>
+            <input type="email" name="email" id="email_input">
+        </div>
+        <div>
+            <span>Student Name (if a relative): </span>
+            <input type="text" name="student_name">
+        </div>
+        <div>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+</div>
+
+<script>
+    const name = document.getElementById("name_input")
+    const number = document.getElementById("number_input")
+
+    const name_error = document.getElementById("name_error")
+    const number_error = document.getElementById("number_error")
+
+    function validate(){
+
+        var out = true;
+
+        console.log("bru");
+
+        if (name.value == "") {
+            name_error.removeAttribute("hidden");
+            out = false;
+        } else {
+            name_error.setAttribute("hidden", "");
+        }
+
+        if (!RegExp('^[2-9]\\d{2}-?\\d{3}-?\\d{4}$').test(number.value)) {
+            number_error.removeAttribute("hidden");
+            out = false;
+        } else {
+            number_error.setAttribute("hidden", "");
+        }
+
+        return out;
+
+    }
+
+</script>
+
+{% endblock %}

@@ -216,3 +216,18 @@ a.nostyle{
 .product_image{
     width: 20%;
 }
+
+.purchase_form{
+    border: 2px solid black;
+    background: lightgray;
+    text-align: center;
+}
+
+.purchase_form div {
+    margin: 10px;
+}
+
+.error-message {
+    color: red;
+    font-size: 10px;
+}

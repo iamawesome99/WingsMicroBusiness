@@ -1,3 +1,5 @@
+# import smtplib
+
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,6 +9,8 @@ from . import forms
 from .models import Product, Branch, SpecificProduct, ProductImage
 
 MAIN_BRANCH_NAME = "microbuisness"
+
+# server = smtplib.SMTP('127.0.0.1', 587)
 
 
 def add_to_cart(request, item):
@@ -192,14 +196,13 @@ def remove_cart(request, branch, number):
 
 def change_cart(request, branch):
     if request.method == "POST":
-
         print(request.POST)
 
         cart_id = int(request.POST["id"])
         product = SpecificProduct.decode(request.session['cart'][cart_id])
 
         new_amount = int(request.POST["new_amount"])
-        new_product = SpecificProduct(product.product, product.selected_options, quantity = new_amount)
+        new_product = SpecificProduct(product.product, product.selected_options, quantity=new_amount)
 
         modify_cart(request, cart_id, new_product.encode())
 
@@ -236,3 +239,10 @@ def search(request, branch):
         return render(request, 'store/search.html', context)
 
     return render(request, 'store/search.html', context)
+
+
+def purchase(request, branch):
+    branch_object = get_object_or_404(Branch, name=branch)
+    context = base_context(request)
+    context.update({'branch': branch_object, 'title': branch_object.display_name})
+    return render(request, 'store/purchase.html', context)
