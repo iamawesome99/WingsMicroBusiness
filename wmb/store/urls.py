@@ -16,4 +16,5 @@ urlpatterns = [
     path('<str:branch>/cart/change/', views.change_cart, name='change_cart'),
     path('<str:branch>/search', views.search, name='search'),
     path('<str:branch>/purchase', views.purchase, name='purchase'),
+    path('<str:branch>/verify_email', views.verify_email, name='verify_email'),
 ]

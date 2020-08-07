@@ -1,14 +1,9 @@
 {% extends 'store/branch_base.html' %}
 
 {% block content %}
-
-    name phone number and email address
-    if you are a relative of a student, student name
-
-
-
 <div class="purchase_form">
-    <form onsubmit="return validate();">
+    <form onsubmit="return validate();" action="{% url 'verify_email' branch.name %}" method="post">
+        {% csrf_token %}
         <div>
             <span>Name: </span>
             <input type="text" name="name" id="name_input">

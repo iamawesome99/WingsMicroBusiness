@@ -91,6 +91,14 @@ class Options:
                 del choices[k]
         return choices
 
+    @staticmethod
+    def serialize(l):
+        return ",".join([str(x) for x in l])
+
+    @staticmethod
+    def deserialize(s):
+        return s.split(",")
+
 
 class SpecificProduct:
 
@@ -197,3 +205,19 @@ class ProductImage(models.Model):
     def __str__(self):
         return self.caption
 
+
+class Order(models.Model):
+
+    buyer_name = models.CharField(max_length=500)
+    buyer_email = models.CharField(max_length=500)
+    buyer_number = models.CharField(max_length=500)
+    buyer_related_student = models.CharField(max_length=500, blank=True)
+
+    verified = models.BooleanField(default=False)
+
+    products = models.TextField(max_length=2000)
+
+    creation_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.pk) + ": " + str(self.buyer_name)

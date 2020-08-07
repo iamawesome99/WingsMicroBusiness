@@ -1,17 +1,13 @@
-# import smtplib
-
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.datastructures import MultiValueDictKeyError
+from django.core.mail import send_mail
 
 from . import forms
 from .models import Product, Branch, SpecificProduct, ProductImage
 
 MAIN_BRANCH_NAME = "microbuisness"
-
-# server = smtplib.SMTP('127.0.0.1', 587)
-
 
 def add_to_cart(request, item):
     try:
@@ -127,13 +123,10 @@ def product_detail(request, branch, product_id):
         context['form'] = forms.OptionsForm(product.options,
                                             initial={i.name: i.choices[0] for i in product.options.options})
 
-    print(context)
-
     return render(request, 'store/product_details.html', context)
 
 
 def buy(request, branch, product_id):
-    print(request.POST)
 
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id)
@@ -196,7 +189,6 @@ def remove_cart(request, branch, number):
 
 def change_cart(request, branch):
     if request.method == "POST":
-        print(request.POST)
 
         cart_id = int(request.POST["id"])
         product = SpecificProduct.decode(request.session['cart'][cart_id])
@@ -246,3 +238,13 @@ def purchase(request, branch):
     context = base_context(request)
     context.update({'branch': branch_object, 'title': branch_object.display_name})
     return render(request, 'store/purchase.html', context)
+
+
+def verify_email(request, branch):
+    context = base_context(request)
+
+    branch_object = get_object_or_404(Branch, name=branch)
+
+    context.update({'branch': branch_object})
+
+    return render(request, 'store/verify_email.html', context)
