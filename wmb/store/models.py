@@ -91,14 +91,6 @@ class Options:
                 del choices[k]
         return choices
 
-    @staticmethod
-    def serialize(l):
-        return ",".join([str(x) for x in l])
-
-    @staticmethod
-    def deserialize(s):
-        return s.split(",")
-
 
 class SpecificProduct:
 
@@ -134,6 +126,13 @@ class SpecificProduct:
         selected_options = ast.literal_eval(encoded[2])
         return SpecificProduct(product, selected_options, quantity=quantity)
 
+    @staticmethod
+    def serialize(l):
+        return ",".join([str(x) for x in l])
+
+    @staticmethod
+    def deserialize(s):
+        return s.split(",")
 
 class OptionsField(models.Field):
 

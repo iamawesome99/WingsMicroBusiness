@@ -5,7 +5,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.core.mail import send_mail
 
 from . import forms
-from .models import Product, Branch, SpecificProduct, ProductImage
+from .models import Product, Branch, SpecificProduct, ProductImage, Order
 
 MAIN_BRANCH_NAME = "microbuisness"
 
@@ -241,10 +241,23 @@ def purchase(request, branch):
 
 
 def verify_email(request, branch):
-    context = base_context(request)
 
-    branch_object = get_object_or_404(Branch, name=branch)
+    if request.method == "POST":
 
-    context.update({'branch': branch_object})
+        print(request.POST)
 
-    return render(request, 'store/verify_email.html', context)
+        order = Order(buyer_name=request.POST['name'], buyer_number=request.POST['number'],
+                      buyer_email=request.POST['email'], buyer_related_student=request.POST['student_name'],
+                      products=SpecificProduct.serialize(get_cart(request)))
+
+        order.save()
+
+        context = base_context(request)
+
+        send_mail("Confirm your order", "Lorem ipsum solor dot amit", "noreply@wingsmicrobusiness.com", [request.POST['email']])
+
+        branch_object = get_object_or_404(Branch, name=branch)
+
+        context.update({'branch': branch_object, "email": request.POST['email']})
+
+        return render(request, 'store/verify_email.html', context)
